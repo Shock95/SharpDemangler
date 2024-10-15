@@ -170,6 +170,7 @@ namespace SharpDemangler.Itanium
 		}
 
 		public string ParseNumber(bool allowNegative = false) {
+			int length = 0;
 			string tmp = data;
 			if (allowNegative)
 				ConsumeIf('n');
@@ -179,8 +180,9 @@ namespace SharpDemangler.Itanium
 
 			while (data.Length != 0 && char.IsDigit(data[0])) {
 				data = data.Substring(1);
+				++length;
 			}
-			return tmp;
+			return tmp.Substring(0, length);
 		}
 
 		public Node ParseLocalName(NameState state) {
@@ -230,6 +232,7 @@ namespace SharpDemangler.Itanium
 
 		public Node ParseUnqualifiedName(NameState state) {
 			Node result;
+			ConsumeIf('L');
 			if (Look() == 'U') {
 				result = parser.ParseUnnamedTypeName(state);
 			} else if (Look() >= '1' && Look() <= '9') {
@@ -628,13 +631,8 @@ namespace SharpDemangler.Itanium
 			}
 
 			while (!ConsumeIf('E')) {
-				ConsumeIf('L');
-
-				if (ConsumeIf('M')) {
-					if (soFar == null)
-						return null;
-					continue;
-				}
+				if (state != null)
+					state.EndsWithTemplateArgs = false;
 
 				if (Look() == 'T') {
 					if (!PushComponent(parser.ParseTemplateParam()))
@@ -691,6 +689,8 @@ namespace SharpDemangler.Itanium
 				if (!PushComponent(parser.ParseUnqualifiedName(state)))
 					return null;
 				subs.Add(soFar);
+
+				ConsumeIf('M');
 			}
 
 			if (soFar == null || subs.Count == 0) {
@@ -1349,7 +1349,7 @@ namespace SharpDemangler.Itanium
 
 		public Node ParseIntegerLiteral(string lit) {
 			string tmp = ParseNumber(true);
-			if (string.IsNullOrEmpty(tmp) && ConsumeIf('E')) {
+			if (!string.IsNullOrEmpty(tmp) && ConsumeIf('E')) {
 				return new IntegerLiteral(lit, tmp);
 			}
 			return null;
@@ -1526,15 +1526,12 @@ namespace SharpDemangler.Itanium
 					Node t = parser.ParseType();
 					if (t == null)
 						return null;
-					string n = ParseNumber();
-					if (string.IsNullOrEmpty(n)) {
-						if (!ConsumeIf('E'))
-							return null;
-						return new IntegerCastExpr(t, n);
-					}
-					if (ConsumeIf('E'))
-						return t;
-					return null;
+					string n = ParseNumber(true);
+					if (string.IsNullOrEmpty(n)) 
+						return null;
+					if (!ConsumeIf('E')) 
+						return null;
+					return new IntegerCastExpr(t, n);
 			}
 		}
 
@@ -2349,6 +2346,8 @@ namespace SharpDemangler.Itanium
 			if(ParseSeqId(out int index)) {
 				return null;
 			}
+
+			++index;
 
 			if (!ConsumeIf('_') || index >= subs.Count)
 				return null;
