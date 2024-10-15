@@ -22,6 +22,7 @@ namespace SharpDemangler.Itanium
 
 				if(sb.CurrentPackMax == 0) {
 					sb.Length = oldLength;
+					return;
 				}
 
 				for(int i=1, e=sb.CurrentPackMax; i<e; i++) {

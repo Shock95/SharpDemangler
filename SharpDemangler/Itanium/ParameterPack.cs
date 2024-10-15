@@ -27,9 +27,15 @@ namespace SharpDemangler.Itanium
 			}
 		}
 
+		public override Node GetSyntaxNode(OutputStream sb) {
+			sb.InitializePackExpansion(data);
+			int idx = sb.CurrentPackIndex;
+			return idx < data.Count() ? data[idx].GetSyntaxNode(sb) : this;
+		}
+
 		public override void PrintLeft(OutputStream sb) {
 			sb.InitializePackExpansion(data);
-			int idx = sb.CurrentPackMax;
+			int idx = sb.CurrentPackIndex;
 			if (idx < data.Count())
 				data[idx].PrintLeft(sb);
 		}
@@ -37,7 +43,8 @@ namespace SharpDemangler.Itanium
 		public override void PrintRight(OutputStream sb) {
 			sb.InitializePackExpansion(data);
 			int idx = sb.CurrentPackIndex;
-
+			if (idx < data.Count())
+				data[idx].PrintRight(sb);
 		}
 	}
 }

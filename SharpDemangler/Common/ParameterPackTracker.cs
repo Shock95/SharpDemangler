@@ -11,9 +11,14 @@ namespace SharpDemangler.Common
 		public int CurrentPackIndex { get; set; }
 		public int CurrentPackMax { get; set; }
 
-		public ParameterPackTracker(NodeArray array) {
+		public ParameterPackTracker() {
+			CurrentPackIndex = int.MaxValue;
+			CurrentPackMax = int.MaxValue;
+		}
+		
+		/*public ParameterPackTracker(NodeArray array) {
 			CurrentPackIndex = 0;
 			CurrentPackMax = array.Count();
-		}
+		}*/
 	}
 }

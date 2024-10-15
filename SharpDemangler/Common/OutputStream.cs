@@ -112,11 +112,13 @@ namespace SharpDemangler.Common
 
 		public static implicit operator StringBuilder(OutputStream sbw) => sbw.sb;
 
-		public ParameterPackTracker PackTracker { get; private set; } = null;
+		public ParameterPackTracker PackTracker { get; private set; } = new ParameterPackTracker();
 
 		public void InitializePackExpansion(NodeArray array) {
-			if(PackTracker == null)
-				PackTracker = new ParameterPackTracker(array);
+			if (PackTracker.CurrentPackMax == int.MaxValue) {
+				PackTracker.CurrentPackIndex = 0;
+				PackTracker.CurrentPackMax = array.Count();
+			}
 		}
 
 		public void UsingParameterPackTracker(ParameterPackTracker ppt, Action action) {
@@ -127,8 +129,8 @@ namespace SharpDemangler.Common
 		}
 
 		public void UsingParameterPack(int CurrentPackIndex, int CurrentPackMax, Action action) {
-			int _curIndex = CurrentPackIndex;
-			int _curMax = CurrentPackMax;
+			int _curIndex = this.CurrentPackIndex;
+			int _curMax = this.CurrentPackMax;
 
 			this.CurrentPackIndex = CurrentPackIndex;
 			this.CurrentPackMax = CurrentPackMax;
