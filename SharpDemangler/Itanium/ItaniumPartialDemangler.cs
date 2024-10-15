@@ -193,6 +193,9 @@ namespace SharpDemangler.Itanium
 						case ItaniumDemangleNodeType.AbiTagAttr:
 							n = ((AbiTagAttr)n).BaseNode;
 							break;
+						case ItaniumDemangleNodeType.FunctionEncoding:
+							n = ((FunctionEncoding)n).Name;
+							break;
 						case ItaniumDemangleNodeType.LocalName:
 							n = ((LocalName)n).Entity;
 							break;
