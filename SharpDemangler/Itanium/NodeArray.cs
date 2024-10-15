@@ -11,14 +11,16 @@ namespace SharpDemangler
 {
 	public class NodeArray : IEnumerable<Node>
 	{
-		Node[] Elements = null;
+		Node[] Elements;
 
 		public Node this[int i] {
 			get { return Elements[i]; }
 			set { Elements[i] = value; }
 		}
 
-		public NodeArray() { }
+		public NodeArray() {
+			Elements = [];
+		}
 
 		public NodeArray(Node[] elements) {
 			Elements = elements;
