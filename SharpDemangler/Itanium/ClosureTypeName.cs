@@ -17,7 +17,7 @@ namespace SharpDemangler.Itanium
 			sb.Append("\'lambda");
 			sb.Append(count);
 			sb.Append("\'(");
-			@params.PrintWithComma(sb);
+			@params?.PrintWithComma(sb);
 			sb.Append(')');
 		}
 	}
