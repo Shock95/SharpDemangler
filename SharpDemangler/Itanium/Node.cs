@@ -35,6 +35,10 @@ namespace SharpDemangler
 			this.FunctionCache = FunctionCache;
 		}
 
+		public virtual Node GetSyntaxNode(OutputStream sb) {
+			return this;
+		}
+		
 		public void Print(OutputStream sb) {
 			PrintLeft(sb);
 			if (RHSComponentCache != Cache.No)
