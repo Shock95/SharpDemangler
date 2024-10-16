@@ -20,7 +20,7 @@ namespace SharpDemangler.Itanium
 		private KeyValuePair<ReferenceKind, Node> Collapse(OutputStream sb) {
 			var soFar = new KeyValuePair<ReferenceKind, Node>(rk, Pointee);
 			for(; ; ) {
-				Node sn = soFar.Value.SyntaxNode;
+				Node sn = soFar.Value.GetSyntaxNode(sb);
 				if (sn.Kind != ItaniumDemangleNodeType.ReferenceType)
 					break;
 				ReferenceType rt = (ReferenceType)sn;
